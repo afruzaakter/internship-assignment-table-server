@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -18,7 +18,7 @@ async function run(){
 
     try{
         await client.connect();
-        console.log("DB Connect");
+        // console.log("DB Connect");
         const workCollection = client.db('workList').collection('work');
 
         //data post
@@ -35,6 +35,23 @@ async function run(){
             const works = await cursor.toArray();
             res.send(works);
         })
+        
+        app.get('/work/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const works = await workCollection.findOne(query);
+            res.send(works);
+        })
+
+        // Delete Data
+        app.delete('/work/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query ={_id: ObjectId(id)}
+            const result = await workCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
 
     }
 
