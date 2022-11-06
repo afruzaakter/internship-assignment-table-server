@@ -51,7 +51,24 @@ async function run(){
             res.send(result);
         })
 
+   //update
 
+   app.put('/work/:id', async(req, res) =>{
+    const id = req.params.id;
+    const data = req.body;
+    const filter = {_id: ObjectId(id)};
+    const options = {upsert: true};
+    const updateDoc = {
+        $set: {
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            hobbies: data.hobbies,
+        }
+    }
+    const result = await workCollection.updateOne(filter, updateDoc, options)
+    res.send(result);
+   });
 
     }
 
